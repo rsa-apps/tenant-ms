@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "invited_by" SET DATA TYPE text;
