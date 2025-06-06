@@ -1,16 +1,30 @@
+version: '3.7'
+
 services:
-  postgres:
-    container_name: tenant-ms-pg
-    image: postgres
+  tenant-db:
+    container_name: tenant-ms-db
+    image: bitnami/postgresql:latest
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: tenant-ms
-      PGDATA: /data/postgres
+      POSTGRES_DB: tenant-db
     volumes:
-      - ./data/pg:/data/postgres
+      - tenant_ms_pg_data:/bitnami/postgresql
+
+  raffle-db:
+    container_name: raffle-ms-db
+    image: bitnami/postgresql:latest
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: raffle-db
+    volumes:
+      - raffle_ms_pg_data:/bitnami/postgresql
 
 volumes:
   tenant_ms_pg_data:
+  raffle_ms_pg_data:

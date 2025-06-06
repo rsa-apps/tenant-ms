@@ -1,6 +1,6 @@
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
-import { boolean, pgTable, text } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgTable, text } from 'drizzle-orm/pg-core'
 import { users } from './users'
 import { timestamps } from './columns.helpers'
 
@@ -16,10 +16,10 @@ export const tenants = pgTable('tenants', {
 
 export const tenantsRelations = relations(tenants, ({ many, one }) => ({
   users: many(users),
-  tenantConfigs: one(TenantConfigs),
+  tenantConfigs: one(tenantConfigs),
 }))
 
-export const TenantConfigs = pgTable('tenant_configs', {
+export const tenantConfigs = pgTable('tenant_configs', {
   id: text('id')
     .$defaultFn(() => createId())
     .primaryKey(),
@@ -33,9 +33,22 @@ export const TenantConfigs = pgTable('tenant_configs', {
   ...timestamps,
 })
 
-export const tenantConfigsRelations = relations(TenantConfigs, ({ one }) => ({
+export const tenantConfigsRelations = relations(tenantConfigs, ({ one }) => ({
   tenant: one(tenants, {
-    fields: [TenantConfigs.tenantId],
+    fields: [tenantConfigs.tenantId],
     references: [tenants.id],
   }),
 }))
+
+export const tenantPaymentConfig = pgTable('tenant_payment_configs', {
+  id: text('id')
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  minDeposit: integer('min_deposit').default(1),
+  minWithdraw: integer('min_withdraw').default(1),
+  maxWithdraw: integer('max_withdraw').default(10000),
+  maxQtyWithdraw: integer('max_qty_withdraw').default(0),
+  webhookUrl: text('webhook_url'),
+  ...timestamps,
+})

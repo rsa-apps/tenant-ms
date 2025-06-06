@@ -9,12 +9,25 @@ export const createPunter = new Elysia()
   .post(
     '/users/create-punter',
     async ({ createPunterService, body }) => {
-      const { tenantId, username, email, password, coupon, invitedBy } = body
+      const {
+        tenantId,
+        username,
+        name,
+        document,
+        email,
+        phone,
+        password,
+        coupon,
+        invitedBy,
+      } = body
 
       await createPunterService.execute({
         tenantId,
         username,
+        name,
+        document,
         email,
+        phone,
         password,
         coupon,
         invitedBy,
@@ -23,8 +36,11 @@ export const createPunter = new Elysia()
     {
       body: t.Object({
         tenantId: t.String(),
-        username: t.String(),
+        name: t.Optional(t.String()),
+        document: t.Optional(t.String()),
+        username: t.Optional(t.String()),
         email: t.String(),
+        phone: t.Optional(t.String()),
         password: t.String(),
         coupon: t.Optional(t.String()),
         invitedBy: t.Optional(t.String()),

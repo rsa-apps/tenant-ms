@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { TenantConfigs, tenants } from '@/db/schema'
+import { tenantConfigs, tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
 import { eq } from 'drizzle-orm'
 
@@ -35,7 +35,7 @@ export class CreateTenantService {
         .values({ name, document, domain })
         .returning()
 
-      await trx.insert(TenantConfigs).values({ tenantId: tenant.id })
+      await trx.insert(tenantConfigs).values({ tenantId: tenant.id })
     })
   }
 }

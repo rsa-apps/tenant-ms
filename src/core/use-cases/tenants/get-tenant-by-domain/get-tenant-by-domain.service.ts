@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { TenantConfigs, tenants } from '@/db/schema'
+import { tenantConfigs, tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
 import { eq } from 'drizzle-orm'
 
@@ -16,34 +16,45 @@ export interface IResponse {
     casinoStatus: boolean
     sportbookStatus: boolean
     lotteriesStatus: boolean
+    defaultPage: string
   }
 }
 
 export class GetTenantByDomainService {
   async execute({ domain }: IRequest): Promise<IResponse> {
     const [tenantData] = await db
-      .select()
+      .select({
+        id: tenants.id,
+        name: tenants.name,
+        domain: tenants.domain,
+        config: {
+          status: tenantConfigs.isActive,
+          casinoStatus: tenantConfigs.casinoStatus,
+          sportbookStatus: tenantConfigs.sportbookStatus,
+          lotteriesStatus: tenantConfigs.lotteriesStatus,
+          defaultPage: tenantConfigs.defaultPage,
+        },
+      })
       .from(tenants)
       .where(eq(tenants.domain, domain))
-      .leftJoin(TenantConfigs, eq(tenants.id, TenantConfigs.tenantId))
+      .leftJoin(tenantConfigs, eq(tenants.id, tenantConfigs.tenantId))
 
-    if (!tenantData) {
+    if (!tenantData || tenantData.config === null) {
       throw new AppError('Cliente não encontrado', 404)
     }
 
     const response: IResponse = {
-      id: tenantData.tenants.id,
-      name: tenantData.tenants.name,
-      domain: tenantData.tenants.domain,
+      id: tenantData.id,
+      name: tenantData.name,
+      domain: tenantData.domain,
       config: {
-        status: tenantData.tenant_configs?.isActive || false,
-        casinoStatus: tenantData.tenant_configs?.casinoStatus || false,
-        sportbookStatus: tenantData.tenant_configs?.sportbookStatus || false,
-        lotteriesStatus: tenantData.tenant_configs?.lotteriesStatus || false,
+        status: tenantData.config.status,
+        casinoStatus: tenantData.config.casinoStatus,
+        sportbookStatus: tenantData.config.sportbookStatus,
+        lotteriesStatus: tenantData.config.lotteriesStatus,
+        defaultPage: tenantData.config.defaultPage,
       },
     }
-
-    console.log(response)
 
     return response
   }

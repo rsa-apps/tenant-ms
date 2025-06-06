@@ -1,0 +1,6 @@
+export enum UserRoles {
+  PUNTER = 'PUNTER',
+  ADMINISTRATOR = 'ADMINISTRATOR',
+  MANAGER = 'MANAGER',
+  AFFILIATE = 'AFFILIATE',
+}

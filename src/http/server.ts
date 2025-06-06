@@ -44,11 +44,12 @@ const app = new Elysia()
         }
       default:
         set.status = 500
-        console.error(error)
+        console.log(error)
         // Sentry.captureException(error)
         return {
           status: 'error',
           message: 'Internal server error',
+          error,
         }
     }
   })

@@ -9,19 +9,22 @@ export const createTenant = new Elysia()
   .post(
     '/tenants/create',
     async ({ createTenantService, body }) => {
-      const response = await createTenantService.execute({
+      await createTenantService.execute({
         name: body.name,
         document: body.document,
         domain: body.domain,
       })
-
-      return response
     },
     {
-      body: t.Object({
-        name: t.String(),
-        document: t.String(),
-        domain: t.String(),
-      }),
+      body: t.Object(
+        {
+          name: t.String(),
+          document: t.String(),
+          domain: t.String(),
+        },
+        {
+          additionalProperties: true,
+        },
+      ),
     },
   )

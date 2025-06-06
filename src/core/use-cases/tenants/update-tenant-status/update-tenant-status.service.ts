@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { TenantConfigs } from '@/db/schema'
+import { tenantConfigs } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
 export interface IRequest {
@@ -11,8 +11,8 @@ export class UpdateTenantStatusService {
   async execute({ tenantId, status }: IRequest): Promise<void> {
     console.log('tenantId', tenantId)
     await db
-      .update(TenantConfigs)
+      .update(tenantConfigs)
       .set({ isActive: !status })
-      .where(eq(TenantConfigs.tenantId, tenantId))
+      .where(eq(tenantConfigs.tenantId, tenantId))
   }
 }

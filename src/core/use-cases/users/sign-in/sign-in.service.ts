@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { userConfig, users } from '@/db/schema/users'
+import { userConfig, users, wallets } from '@/db/schema/users'
 import { AppError } from '@/domain/errors/AppError'
 import { and, eq, or } from 'drizzle-orm'
 
@@ -11,9 +11,12 @@ interface IRequest {
 
 export interface IResponse {
   id: string
-  username: string
   email: string
-  wallet: number
+  wallet: {
+    balance: number
+    credits: number
+    bonus: number
+  }
   userConfig: {
     role: string
   }
@@ -31,6 +34,7 @@ export class SignInService {
         ),
       )
       .leftJoin(userConfig, eq(users.id, userConfig.userId))
+      .leftJoin(wallets, eq(users.id, wallets.userId))
 
     if (!userData) {
       throw new AppError('Invalid credentials', 400)
@@ -55,9 +59,12 @@ export class SignInService {
 
     return {
       id: userData.users.id,
-      username: userData.users.username,
       email: userData.users.email,
-      wallet: userData.users.wallet,
+      wallet: {
+        balance: Number(wallets.credits) + Number(wallets.bonus),
+        credits: Number(wallets.credits),
+        bonus: Number(wallets.bonus),
+      },
       userConfig: {
         role: userData.user_config.role,
       },

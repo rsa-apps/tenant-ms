@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { TenantConfigs, tenants } from '@/db/schema'
+import { tenantConfigs, tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
 import { eq } from 'drizzle-orm'
 
@@ -19,7 +19,7 @@ export class FetchTenantsService {
     const tenant = await db
       .select()
       .from(tenants)
-      .leftJoin(TenantConfigs, eq(tenants.id, TenantConfigs.tenantId))
+      .leftJoin(tenantConfigs, eq(tenants.id, tenantConfigs.tenantId))
 
     if (!tenant) {
       throw new AppError('Cliente não encontrado', 404)
