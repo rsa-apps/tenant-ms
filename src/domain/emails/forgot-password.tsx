@@ -32,13 +32,13 @@ export const ResetPasswordEmail = ({
             alt="Dropbox"
           /> */}
           <Section>
-            <Text style={text}>Hi {userFirstname},</Text>
+            <Text style={text}>OLá {userFirstname},</Text>
             <Text style={text}>
               Alguém recentemente solicitou uma alteração de senha para sua
               conta. Se foi você, pode definir uma nova senha aqui:
             </Text>
             <Button style={button} href={resetPasswordLink}>
-              Reset password
+              Redefinir senha
             </Button>
             <Text style={text}>
               Se você não deseja alterar sua senha ou não solicitou isso, apenas

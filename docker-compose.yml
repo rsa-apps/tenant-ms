@@ -5,25 +5,13 @@ services:
     container_name: tenant-ms-db
     image: bitnami/postgresql:latest
     ports:
-      - 5432:5432
+      - 5431:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: tenant-db
     volumes:
       - tenant_ms_pg_data:/bitnami/postgresql
-
-  raffle-db:
-    container_name: raffle-ms-db
-    image: bitnami/postgresql:latest
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
-      POSTGRES_DB: raffle-db
-    volumes:
-      - raffle_ms_pg_data:/bitnami/postgresql
 
 volumes:
   tenant_ms_pg_data:

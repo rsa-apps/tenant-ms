@@ -7,7 +7,6 @@ export interface IResponse {
   tenantsData: {
     id: string
     name: string
-    document: string
     domain: string
     status: boolean
     createdAt: Date
@@ -29,7 +28,6 @@ export class FetchTenantsService {
       tenantsData: tenant.map((t) => ({
         id: t.tenants.id,
         name: t.tenants.name,
-        document: t.tenants.document,
         domain: t.tenants.domain,
         status: t.tenant_configs?.isActive || false,
         createdAt: t.tenants.created_at,

@@ -1,39 +1,96 @@
+import { UserRoles } from '@/domain/enums/user'
 import { db } from './connection'
-import { users } from '@/db/schema/users'
-import { tenants } from './schema'
+
+import {
+  tenantConfigs,
+  tenantPaymentConfig,
+  tenants,
+  affiliateInfo,
+  userConfig,
+  users,
+  wallets,
+} from './schema'
 
 async function seed() {
   console.log('🌾Seeding started')
 
-  const [tenant] = await db
-    .insert(tenants)
-    .values({
-      name: 'localhost',
-      domain: 'http://localhost:3000',
-      document: '123456789',
-    })
-    .onConflictDoUpdate({
-      target: users.id,
-      set: {
+  // await db.delete(tenantConfigs).execute()
+  // await db.delete(tenantPaymentConfig).execute()
+  // await db.delete(tenants).execute()
+  // await db.delete(users).execute()
+  // await db.delete(wallets).execute()
+  // await db.delete(userConfig).execute()
+  // await db.delete(affiliateInfo).execute()
+
+  await db.transaction(async (tx) => {
+    const [tenant] = await tx
+      .insert(tenants)
+      .values({
         name: 'localhost',
         domain: 'http://localhost:3000',
-        document: '123456789',
-      },
-    })
-    .returning()
+      })
+      .onConflictDoNothing()
+      .returning()
 
-  await db
-    .insert(users)
-    .values({
-      tenantId: tenant.id,
-      username: 'admin',
-      email: 'tenant@mail.com',
-      password: 'admin',
-    })
-    .onConflictDoUpdate({
-      target: users.id,
-      set: { username: 'admin', email: 'tenant@mail.com', password: 'admin' },
-    })
+    if (!tenant) {
+      console.log('Tenant already exists, skipping tenant seeding')
+
+      return
+    }
+
+    await tx
+      .insert(tenantConfigs)
+      .values({
+        tenantId: tenant.id,
+      })
+      .onConflictDoNothing()
+
+    await tx
+      .insert(tenantPaymentConfig)
+      .values({
+        tenantId: tenant.id,
+      })
+      .onConflictDoNothing()
+
+    const passwordHash = await Bun.password.hash('!Admin123')
+
+    const [user] = await tx
+      .insert(users)
+      .values({
+        tenantId: tenant.id,
+        username: 'adminmaster',
+        email: 'tenant@mail.com',
+        password: passwordHash,
+      })
+      .returning()
+
+    if (!user) {
+      console.log('User already exists, skipping user seeding')
+      return
+    }
+
+    await tx
+      .insert(wallets)
+      .values({
+        userId: user.id,
+      })
+      .onConflictDoNothing()
+
+    await tx
+      .insert(userConfig)
+      .values({
+        userId: user.id,
+        role: UserRoles.ADMINISTRATOR,
+      })
+      .onConflictDoNothing()
+
+    await tx
+      .insert(affiliateInfo)
+      .values({
+        userId: user.id,
+      })
+      .onConflictDoNothing()
+  })
 }
 
 seed()

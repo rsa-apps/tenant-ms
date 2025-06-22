@@ -9,7 +9,6 @@ export const tenants = pgTable('tenants', {
     .$defaultFn(() => createId())
     .primaryKey(),
   name: text('name').notNull(),
-  document: text('document').notNull().unique(),
   domain: text('domain').notNull().unique(),
   ...timestamps,
 })
@@ -28,7 +27,7 @@ export const tenantConfigs = pgTable('tenant_configs', {
   sportbookStatus: boolean('sportbook_status').notNull().default(false),
   casinoStatus: boolean('casino_status').notNull().default(true),
   lotteriesStatus: boolean('lotteries_status').notNull().default(false),
-  defaultPage: text('default_page').notNull().default('/casino'),
+  defaultPage: text('default_page').notNull().default('/app/casino'),
   webhookUrl: text('webhook_url'),
   ...timestamps,
 })
@@ -49,6 +48,5 @@ export const tenantPaymentConfig = pgTable('tenant_payment_configs', {
   minWithdraw: integer('min_withdraw').default(1),
   maxWithdraw: integer('max_withdraw').default(10000),
   maxQtyWithdraw: integer('max_qty_withdraw').default(0),
-  webhookUrl: text('webhook_url'),
   ...timestamps,
 })

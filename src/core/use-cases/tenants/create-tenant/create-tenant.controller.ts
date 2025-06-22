@@ -11,7 +11,6 @@ export const createTenant = new Elysia()
     async ({ createTenantService, body }) => {
       await createTenantService.execute({
         name: body.name,
-        document: body.document,
         domain: body.domain,
       })
     },
@@ -19,7 +18,6 @@ export const createTenant = new Elysia()
       body: t.Object(
         {
           name: t.String(),
-          document: t.String(),
           domain: t.String(),
         },
         {
