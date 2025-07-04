@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { userConfig, users, wallets } from '@/db/schema/users'
+import { users, wallets } from '@/db/schema/users'
 import { AppError } from '@/domain/errors/AppError'
 import { and, eq, or } from 'drizzle-orm'
 
@@ -17,9 +17,7 @@ export interface IResponse {
     credits: number
     bonus: number
   }
-  userConfig: {
-    role: string
-  }
+  role: string[] | null
 }
 
 export class SignInService {
@@ -33,7 +31,6 @@ export class SignInService {
           and(eq(users.tenantId, tenantId), eq(users.email, login)),
         ),
       )
-      .leftJoin(userConfig, eq(users.id, userConfig.userId))
       .leftJoin(wallets, eq(users.id, wallets.userId))
 
     if (!userData) {
@@ -49,14 +46,6 @@ export class SignInService {
       throw new AppError('Invalid credentials', 400)
     }
 
-    if (!userData.user_config) {
-      throw new AppError('User config not found', 500)
-    }
-
-    if (!userData.user_config.status) {
-      throw new AppError('User is inactive', 400)
-    }
-
     return {
       id: userData.users.id,
       email: userData.users.email,
@@ -65,9 +54,7 @@ export class SignInService {
         credits: Number(wallets.credits),
         bonus: Number(wallets.bonus),
       },
-      userConfig: {
-        role: userData.user_config.role,
-      },
+      role: userData.users.role,
     }
   }
 }

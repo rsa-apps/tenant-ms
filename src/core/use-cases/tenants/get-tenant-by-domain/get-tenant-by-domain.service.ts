@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { tenantConfigs, tenants } from '@/db/schema'
+import { theme, tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
 import { eq } from 'drizzle-orm'
 
@@ -11,12 +11,12 @@ export interface IResponse {
   id: string
   name: string
   domain: string
-  config: {
-    status: boolean
-    casinoStatus: boolean
-    sportbookStatus: boolean
-    lotteriesStatus: boolean
-    defaultPage: string
+  theme: {
+    logo: string
+    favicon: string
+    primaryColor: string
+    secondaryColor: string
+    backgroundColor: string
   }
 }
 
@@ -27,19 +27,19 @@ export class GetTenantByDomainService {
         id: tenants.id,
         name: tenants.name,
         domain: tenants.domain,
-        config: {
-          status: tenantConfigs.isActive,
-          casinoStatus: tenantConfigs.casinoStatus,
-          sportbookStatus: tenantConfigs.sportbookStatus,
-          lotteriesStatus: tenantConfigs.lotteriesStatus,
-          defaultPage: tenantConfigs.defaultPage,
+        theme: {
+          logo: theme.logo,
+          favicon: theme.favicon,
+          primaryColor: theme.primaryColor,
+          secondaryColor: theme.secondaryColor,
+          backgroundColor: theme.backgroundColor,
         },
       })
       .from(tenants)
       .where(eq(tenants.domain, domain))
-      .leftJoin(tenantConfigs, eq(tenants.id, tenantConfigs.tenantId))
+      .leftJoin(theme, eq(tenants.id, theme.tenantId))
 
-    if (!tenantData || tenantData.config === null) {
+    if (!tenantData || tenantData.theme === null) {
       throw new AppError('Cliente não encontrado', 404)
     }
 
@@ -47,12 +47,12 @@ export class GetTenantByDomainService {
       id: tenantData.id,
       name: tenantData.name,
       domain: tenantData.domain,
-      config: {
-        status: tenantData.config.status,
-        casinoStatus: tenantData.config.casinoStatus,
-        sportbookStatus: tenantData.config.sportbookStatus,
-        lotteriesStatus: tenantData.config.lotteriesStatus,
-        defaultPage: tenantData.config.defaultPage,
+      theme: {
+        logo: tenantData.theme.logo || '',
+        favicon: tenantData.theme.favicon || '',
+        primaryColor: tenantData.theme.primaryColor || '#000000',
+        secondaryColor: tenantData.theme.secondaryColor || '#FFFFFF',
+        backgroundColor: tenantData.theme.backgroundColor || '#F0F0F0',
       },
     }
 

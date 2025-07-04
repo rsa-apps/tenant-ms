@@ -9,15 +9,17 @@ export const users = pgTable('users', {
     .$defaultFn(() => createId())
     .primaryKey(),
   tenantId: text('tenant_id').notNull(),
-  username: text('username'),
-  password: text('password').notNull(),
   name: text('name'),
-  document: text('document'),
-  phone: text('phone'),
   email: text('email').notNull(),
+  username: text('username'),
+  phoneNumber: text('phone_number'),
+  vatCode: text('vat_code'),
+  status: boolean('status').notNull().default(true),
+  role: text('role').array().default(['PUNTER']),
+  password: text('password').notNull(),
   birthDate: timestamp('birth_date'),
   invitedBy: text('invited_by'),
-  affiliateInfoId: text('affiliate_id'),
+  affiliationId: text('affiliation_id'),
   ...timestamps,
 })
 
@@ -26,13 +28,18 @@ export const usersRelations = relations(users, ({ one }) => ({
     fields: [users.tenantId],
     references: [tenants.id],
   }),
-  invitee: one(users, {
+  invitation: one(users, {
     fields: [users.invitedBy],
     references: [users.id],
   }),
-  affiliateInfo: one(affiliateInfo),
-  userConfig: one(userConfig),
-  userTokens: one(userTokens),
+  affiliationConfig: one(affiliationConfig, {
+    fields: [users.affiliationId],
+    references: [affiliationConfig.id],
+  }),
+  userTokens: one(userTokens, {
+    fields: [users.id],
+    references: [userTokens.userId],
+  }),
 }))
 
 export const wallets = pgTable('wallets', {
@@ -43,7 +50,9 @@ export const wallets = pgTable('wallets', {
   credits: integer('credits').default(0),
   bonus: integer('bonus').default(0),
   totalDeposited: integer('total_deposited').default(0),
+  qtyDeposits: integer('qty_deposits').default(0),
   totalWithdrawn: integer('total_withdrawn').default(0),
+  qtyWithdraws: integer('qty_withdraws').default(0),
   ...timestamps,
 })
 
@@ -51,7 +60,7 @@ export const walletRelations = relations(wallets, ({ one }) => ({
   user: one(users, { fields: [wallets.userId], references: [users.id] }),
 }))
 
-export const affiliateInfo = pgTable('affiliate_info', {
+export const affiliationConfig = pgTable('affiliate_info', {
   id: text('id')
     .$defaultFn(() => createId())
     .primaryKey(),
@@ -60,22 +69,15 @@ export const affiliateInfo = pgTable('affiliate_info', {
   affiliateComission: integer('commision').notNull().default(0),
 })
 
-export const affiliateInfoRelations = relations(affiliateInfo, ({ one }) => ({
-  user: one(users, { fields: [affiliateInfo.userId], references: [users.id] }),
-}))
-
-export const userConfig = pgTable('user_config', {
-  id: text('id')
-    .$defaultFn(() => createId())
-    .primaryKey(),
-  userId: text('user_id').notNull(),
-  role: text('role').notNull().default('PUNTER'),
-  status: boolean('status').notNull().default(true),
-})
-
-export const userConfigRelations = relations(userConfig, ({ one }) => ({
-  user: one(users, { fields: [userConfig.userId], references: [users.id] }),
-}))
+export const affiliationConfigRelations = relations(
+  affiliationConfig,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [affiliationConfig.userId],
+      references: [users.id],
+    }),
+  }),
+)
 
 export const userTokens = pgTable('user_token', {
   id: text('id')
@@ -86,6 +88,6 @@ export const userTokens = pgTable('user_token', {
   expires: timestamp('expires').notNull(),
 })
 
-export const userTokenRelations = relations(userConfig, ({ one }) => ({
-  user: one(users, { fields: [userConfig.userId], references: [users.id] }),
+export const userTokenRelations = relations(userTokens, ({ one }) => ({
+  user: one(users, { fields: [userTokens.id], references: [users.id] }),
 }))

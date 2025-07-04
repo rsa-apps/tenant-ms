@@ -1,5 +1,5 @@
 import { db } from '@/db/connection'
-import { affiliateInfo, userConfig, users, wallets } from '@/db/schema/users'
+import { users, wallets } from '@/db/schema/users'
 import { createPunterInfoValidation } from './info-validations'
 
 export interface IRequest {
@@ -48,15 +48,13 @@ export class CreatePunterService {
           username,
           email,
           name,
-          document,
-          phone,
+          phoneNumber: phone,
+          vatCode: document,
           password: passwordHash,
           invitedBy,
         })
         .returning()
 
-      await trx.insert(userConfig).values({ userId: user.id })
-      await trx.insert(affiliateInfo).values({ userId: user.id })
       await trx.insert(wallets).values({ userId: user.id })
     })
   }

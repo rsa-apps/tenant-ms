@@ -15,4 +15,3 @@ services:
 
 volumes:
   tenant_ms_pg_data:
-  raffle_ms_pg_data:

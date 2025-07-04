@@ -22,7 +22,7 @@ export async function createPunterInfoValidation({
     const [alreadyDocumentExists] = await db
       .select({ id: users.id })
       .from(users)
-      .where(and(eq(users.tenantId, tenantId), eq(users.document, document)))
+      .where(and(eq(users.tenantId, tenantId), eq(users.vatCode, document)))
 
     if (alreadyDocumentExists) {
       throw new AppError('Document already exists', 400)
@@ -33,7 +33,7 @@ export async function createPunterInfoValidation({
     const [alreadyPhoneExists] = await db
       .select({ id: users.id })
       .from(users)
-      .where(and(eq(users.tenantId, tenantId), eq(users.phone, phone)))
+      .where(and(eq(users.tenantId, tenantId), eq(users.phoneNumber, phone)))
 
     if (alreadyPhoneExists) {
       throw new AppError('Phone already exists', 400)

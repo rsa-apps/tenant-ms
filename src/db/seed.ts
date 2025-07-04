@@ -1,15 +1,6 @@
-import { UserRoles } from '@/domain/enums/user'
 import { db } from './connection'
 
-import {
-  tenantConfigs,
-  tenantPaymentConfig,
-  tenants,
-  affiliateInfo,
-  userConfig,
-  users,
-  wallets,
-} from './schema'
+import { tenants, theme, users, wallets } from './schema'
 
 async function seed() {
   console.log('🌾Seeding started')
@@ -39,14 +30,7 @@ async function seed() {
     }
 
     await tx
-      .insert(tenantConfigs)
-      .values({
-        tenantId: tenant.id,
-      })
-      .onConflictDoNothing()
-
-    await tx
-      .insert(tenantPaymentConfig)
+      .insert(theme)
       .values({
         tenantId: tenant.id,
       })
@@ -71,21 +55,6 @@ async function seed() {
 
     await tx
       .insert(wallets)
-      .values({
-        userId: user.id,
-      })
-      .onConflictDoNothing()
-
-    await tx
-      .insert(userConfig)
-      .values({
-        userId: user.id,
-        role: UserRoles.ADMINISTRATOR,
-      })
-      .onConflictDoNothing()
-
-    await tx
-      .insert(affiliateInfo)
       .values({
         userId: user.id,
       })

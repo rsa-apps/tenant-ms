@@ -1,7 +1,6 @@
 import { db } from '@/db/connection'
-import { tenantConfigs, tenants } from '@/db/schema'
+import { tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
-import { eq } from 'drizzle-orm'
 
 export interface IResponse {
   tenantsData: {
@@ -15,26 +14,21 @@ export interface IResponse {
 
 export class FetchTenantsService {
   async execute(): Promise<IResponse> {
-    const tenant = await db
-      .select()
-      .from(tenants)
-      .leftJoin(tenantConfigs, eq(tenants.id, tenantConfigs.tenantId))
+    const tenant = await db.select().from(tenants)
 
     if (!tenant) {
       throw new AppError('Cliente não encontrado', 404)
     }
 
     const response: IResponse = {
-      tenantsData: tenant.map((t) => ({
-        id: t.tenants.id,
-        name: t.tenants.name,
-        domain: t.tenants.domain,
-        status: t.tenant_configs?.isActive || false,
-        createdAt: t.tenants.created_at,
+      tenantsData: tenant.map((tenant) => ({
+        id: tenant.id,
+        name: tenant.name,
+        domain: tenant.domain,
+        status: tenant.status || false,
+        createdAt: tenant.created_at,
       })),
     }
-
-    console.log(response)
 
     return response
   }

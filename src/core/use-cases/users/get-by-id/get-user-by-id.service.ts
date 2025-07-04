@@ -24,8 +24,8 @@ export class GetUserByIdService {
 
     return {
       id: userData.id,
-      document: userData.document || '',
-      phone: userData.phone || '',
+      document: userData.vatCode || '',
+      phone: userData.phoneNumber || '',
       email: userData.email || '',
       name: userData.name || '',
     }
