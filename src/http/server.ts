@@ -1,4 +1,5 @@
 import { Elysia } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
 // import * as Sentry from '@sentry/bun'
 import { routes } from './routes'
 import { AppError } from '@/domain/errors/AppError'
@@ -44,7 +45,7 @@ const app = new Elysia()
         }
       default:
         set.status = 500
-        console.log(error)
+        console.error(error)
         // Sentry.captureException(error)
         return {
           status: 'error',
@@ -54,6 +55,7 @@ const app = new Elysia()
     }
   })
 
+app.use(swagger())
 app.use(routes)
 
 app.listen(env.PORT)

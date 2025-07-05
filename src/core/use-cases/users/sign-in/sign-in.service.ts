@@ -50,9 +50,9 @@ export class SignInService {
       id: userData.users.id,
       email: userData.users.email,
       wallet: {
-        balance: Number(wallets.credits) + Number(wallets.bonus),
-        credits: Number(wallets.credits),
-        bonus: Number(wallets.bonus),
+        balance: Number(wallets.credits) + Number(wallets.bonus) || 0,
+        credits: Number(wallets.credits) || 0,
+        bonus: Number(wallets.bonus) || 0,
       },
       role: userData.users.role,
     }

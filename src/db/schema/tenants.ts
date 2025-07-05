@@ -28,9 +28,9 @@ export const theme = pgTable('theme', {
     .primaryKey(),
   logo: text('logo'),
   favicon: text('favicon'),
-  primaryColor: text('primary_color'),
-  secondaryColor: text('secondary_color'),
-  backgroundColor: text('background_color'),
+  primaryColor: text('primary_color').default('#000000'),
+  secondaryColor: text('secondary_color').default('#FFFFFF'),
+  backgroundColor: text('background_color').default('#F0F0F0'),
   tenantId: text('tenant_id').notNull(),
   ...timestamps,
 })
