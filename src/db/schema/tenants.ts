@@ -26,8 +26,8 @@ export const theme = pgTable('theme', {
   id: text('id')
     .$defaultFn(() => createId())
     .primaryKey(),
-  logo: text('logo'),
-  favicon: text('favicon'),
+  logo: text('logo').default("https://rsa.bet/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frsa-logo.f7e387d5.png&w=256&q=75"),
+  favicon: text("favicon").default('https://rsa.bet/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frsa-logo.f7e387d5.png&w=256&q=75'),
   primaryColor: text('primary_color').default('#000000'),
   secondaryColor: text('secondary_color').default('#FFFFFF'),
   backgroundColor: text('background_color').default('#F0F0F0'),

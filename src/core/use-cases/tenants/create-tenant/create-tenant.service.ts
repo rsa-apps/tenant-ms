@@ -2,6 +2,8 @@ import { db } from '@/db/connection'
 import { theme, tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
 import { eq } from 'drizzle-orm'
+import axios from 'axios'
+import { env } from '@/env'
 
 export interface IRequest {
   name: string
@@ -26,6 +28,10 @@ export class CreateTenantService {
         .returning()
 
       await trx.insert(theme).values({ tenantId: tenant.id })
+
+      await axios.post(`${env.PAYMENTS_MS_ENDPOINT}/tenant/create`, {
+        tenantId: tenant.id,
+      })
     })
   }
 }

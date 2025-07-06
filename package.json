@@ -14,6 +14,7 @@
     "@elysiajs/swagger": "^1.2.2",
     "@paralleldrive/cuid2": "^2.2.2",
     "@react-email/components": "0.0.32",
+    "axios": "^1.10.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.3",

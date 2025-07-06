@@ -1,24 +1,23 @@
+import axios from 'axios'
 import { db } from './connection'
 
 import { tenants, theme, users, wallets } from './schema'
+import { env } from '@/env'
 
 async function seed() {
   console.log('🌾Seeding started')
 
-  // await db.delete(tenantConfigs).execute()
-  // await db.delete(tenantPaymentConfig).execute()
-  // await db.delete(tenants).execute()
-  // await db.delete(users).execute()
-  // await db.delete(wallets).execute()
-  // await db.delete(userConfig).execute()
-  // await db.delete(affiliateInfo).execute()
+  await db.delete(tenants).execute()
+  await db.delete(theme).execute()
+  await db.delete(users).execute()
+  await db.delete(wallets).execute()
 
   await db.transaction(async (tx) => {
     const [tenant] = await tx
       .insert(tenants)
       .values({
         name: 'localhost',
-        domain: 'http://localhost:3000',
+        domain: 'localhost:3000',
       })
       .onConflictDoNothing()
       .returning()
@@ -29,12 +28,13 @@ async function seed() {
       return
     }
 
-    await tx
-      .insert(theme)
-      .values({
-        tenantId: tenant.id,
-      })
-      .onConflictDoNothing()
+    await tx.insert(theme).values({
+      tenantId: tenant.id,
+    })
+
+    await axios.post(`${env.PAYMENTS_MS_ENDPOINT}/tenant/create`, {
+      tenantId: tenant.id,
+    })
 
     const passwordHash = await Bun.password.hash('!Admin123')
 
@@ -44,6 +44,7 @@ async function seed() {
         tenantId: tenant.id,
         username: 'adminmaster',
         email: 'tenant@mail.com',
+        role: ['ADMINISTRATOR'],
         password: passwordHash,
       })
       .returning()
