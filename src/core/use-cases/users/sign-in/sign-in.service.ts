@@ -1,7 +1,7 @@
 import { db } from '@/db/connection'
 import { users, wallets } from '@/db/schema/users'
 import { AppError } from '@/domain/errors/AppError'
-import { and, eq, or } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 interface IRequest {
   tenantId: string
@@ -25,12 +25,7 @@ export class SignInService {
     const [userData] = await db
       .select()
       .from(users)
-      .where(
-        or(
-          and(eq(users.tenantId, tenantId), eq(users.username, login)),
-          and(eq(users.tenantId, tenantId), eq(users.email, login)),
-        ),
-      )
+      .where(and(eq(users.tenantId, tenantId), eq(users.email, login)))
       .leftJoin(wallets, eq(users.id, wallets.userId))
 
     if (!userData) {

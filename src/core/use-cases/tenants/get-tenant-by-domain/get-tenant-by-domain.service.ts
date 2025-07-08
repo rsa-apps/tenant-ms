@@ -1,10 +1,23 @@
 import { db } from '@/db/connection'
 import { theme, tenants } from '@/db/schema'
 import { AppError } from '@/domain/errors/AppError'
+import { env } from '@/env'
+import axios from 'axios'
 import { eq } from 'drizzle-orm'
 
 interface IRequest {
   domain: string
+}
+
+interface PaymentConfigAxios {
+  minDeposit: string
+  maxDeposit: string
+  depositFee: number
+  depositSuggestions: number[]
+  minWithdraw: string
+  maxWithdraw: string
+  maxAutoWithdraw: string
+  maxWithdrawPerDay: number
 }
 
 export interface IResponse {
@@ -21,6 +34,7 @@ export interface IResponse {
     secondaryColor: string
     backgroundColor: string
   }
+  paymentConfig: PaymentConfigAxios
 }
 
 export class GetTenantByDomainService {
@@ -49,6 +63,17 @@ export class GetTenantByDomainService {
       throw new AppError('Cliente não encontrado', 404)
     }
 
+    const paymentConfig = await axios.post<PaymentConfigAxios>(
+      `${env.PAYMENTS_MS_ENDPOINT}/tenant/config`,
+      {
+        tenantId: tenantData.id,
+      },
+    )
+
+    if (!paymentConfig.data) {
+      throw new AppError('Erro ao buscar configuração de pagamento', 500)
+    }
+
     const response: IResponse = {
       id: tenantData.id,
       name: tenantData.name,
@@ -62,6 +87,16 @@ export class GetTenantByDomainService {
         primaryColor: tenantData.theme.primaryColor || '#000000',
         secondaryColor: tenantData.theme.secondaryColor || '#FFFFFF',
         backgroundColor: tenantData.theme.backgroundColor || '#F0F0F0',
+      },
+      paymentConfig: {
+        minDeposit: paymentConfig.data.minDeposit,
+        maxDeposit: paymentConfig.data.maxDeposit,
+        depositFee: paymentConfig.data.depositFee,
+        depositSuggestions: paymentConfig.data.depositSuggestions,
+        minWithdraw: paymentConfig.data.minWithdraw,
+        maxWithdraw: paymentConfig.data.maxWithdraw,
+        maxAutoWithdraw: paymentConfig.data.maxAutoWithdraw,
+        maxWithdrawPerDay: paymentConfig.data.maxWithdrawPerDay,
       },
     }
 
