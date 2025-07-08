@@ -9,7 +9,7 @@ export const users = pgTable('users', {
     .$defaultFn(() => createId())
     .primaryKey(),
   tenantId: text('tenant_id').notNull(),
-  name: text('name'),
+  name: text('name').notNull(),
   email: text('email').notNull(),
   username: text('username'),
   phoneNumber: text('phone_number'),
@@ -17,7 +17,7 @@ export const users = pgTable('users', {
   status: boolean('status').notNull().default(true),
   role: text('role').array().default(['PUNTER']),
   password: text('password').notNull(),
-  birthDate: timestamp('birth_date'),
+  birthDate: timestamp('birth_date').notNull(),
   invitedBy: text('invited_by'),
   affiliationId: text('affiliation_id'),
   ...timestamps,

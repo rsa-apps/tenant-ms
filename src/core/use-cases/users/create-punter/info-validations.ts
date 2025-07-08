@@ -5,7 +5,7 @@ import { and, eq } from 'drizzle-orm'
 
 export interface IRequest {
   tenantId: string
-  document?: string
+  vatCode?: string
   username?: string
   email: string
   phone?: string
@@ -13,19 +13,19 @@ export interface IRequest {
 
 export async function createPunterInfoValidation({
   tenantId,
-  document,
+  vatCode,
   phone,
   username,
   email,
 }: IRequest): Promise<void> {
-  if (document) {
+  if (vatCode) {
     const [alreadyDocumentExists] = await db
       .select({ id: users.id })
       .from(users)
-      .where(and(eq(users.tenantId, tenantId), eq(users.vatCode, document)))
+      .where(and(eq(users.tenantId, tenantId), eq(users.vatCode, vatCode)))
 
     if (alreadyDocumentExists) {
-      throw new AppError('Document already exists', 400)
+      throw new AppError('Este documento já está cadastrado', 400)
     }
   }
 
@@ -36,7 +36,7 @@ export async function createPunterInfoValidation({
       .where(and(eq(users.tenantId, tenantId), eq(users.phoneNumber, phone)))
 
     if (alreadyPhoneExists) {
-      throw new AppError('Phone already exists', 400)
+      throw new AppError('Número de telefone já cadastrado', 400)
     }
   }
 
@@ -47,7 +47,7 @@ export async function createPunterInfoValidation({
       .where(and(eq(users.tenantId, tenantId), eq(users.username, username)))
 
     if (alreadyUsernameExists) {
-      throw new AppError('Username already exists', 400)
+      throw new AppError('Usuário já cadastrado', 400)
     }
   }
 
@@ -57,6 +57,6 @@ export async function createPunterInfoValidation({
     .where(and(eq(users.tenantId, tenantId), eq(users.email, email)))
 
   if (alreadyEmailExists) {
-    throw new AppError('Email already exists', 400)
+    throw new AppError('Email já cadastrado', 400)
   }
 }

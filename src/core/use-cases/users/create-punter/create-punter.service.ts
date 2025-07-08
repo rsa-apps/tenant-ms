@@ -1,14 +1,14 @@
 import { db } from '@/db/connection'
 import { users, wallets } from '@/db/schema/users'
 import { createPunterInfoValidation } from './info-validations'
+import { cpfCnpj } from '@/lib/cpf-cnpj'
+import { AppError } from '@/domain/errors/AppError'
 
 export interface IRequest {
   tenantId: string
-  name?: string
-  document?: string
-  username?: string
+  vatCode: string
   email: string
-  phone?: string
+  phone: string
   password: string
   coupon?: string
   invitedBy?: string
@@ -17,9 +17,7 @@ export interface IRequest {
 export class CreatePunterService {
   async execute({
     tenantId,
-    name,
-    document,
-    username,
+    vatCode,
     email,
     phone,
     password,
@@ -28,11 +26,18 @@ export class CreatePunterService {
   }: IRequest): Promise<void> {
     await createPunterInfoValidation({
       tenantId,
-      document,
+      vatCode,
       phone,
-      username,
       email,
     })
+
+    const { name, birthDate, valid } = await cpfCnpj.verifyDocument({
+      vatCode: vatCode.replace(/\D/g, ''),
+    })
+
+    if (!valid) {
+      throw new AppError('Documento de menor de idade', 400)
+    }
 
     const passwordHash = await Bun.password.hash(password)
 
@@ -45,11 +50,11 @@ export class CreatePunterService {
         .insert(users)
         .values({
           tenantId,
-          username,
-          email,
+          vatCode,
           name,
+          birthDate,
+          email,
           phoneNumber: phone,
-          vatCode: document,
           password: passwordHash,
           invitedBy,
         })

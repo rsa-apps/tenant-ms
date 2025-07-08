@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { db } from '@/db/connection'
 import { users } from '@/db/schema'
+import { AppError } from '@/domain/errors/AppError'
 
 interface IRequest {
   userId: string
@@ -19,7 +20,7 @@ export class GetUserByIdService {
     const [userData] = await db.select().from(users).where(eq(users.id, userId))
 
     if (!userData) {
-      throw new Error('User not found')
+      throw new AppError('User not found', 404)
     }
 
     return {

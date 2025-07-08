@@ -42,7 +42,9 @@ async function seed() {
       .insert(users)
       .values({
         tenantId: tenant.id,
-        username: 'adminmaster',
+        vatCode: '000.000.000-00',
+        birthDate: new Date(),
+        name: 'adminmaster',
         email: 'tenant@mail.com',
         role: ['ADMINISTRATOR'],
         password: passwordHash,

@@ -9,7 +9,6 @@ export const signIn = new Elysia()
   .post(
     '/users/sign-in',
     async ({ signInService, body }) => {
-      console.log('signIn body', body)
       const { tenantId, login, password } = body
 
       const userData = await signInService.execute({
