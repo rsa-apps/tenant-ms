@@ -52,7 +52,6 @@ export async function verifyDocument({
   // valid if data.nascimento > 18 anos
   // convert dd/mm/yyyy to Date
   const [dia, mes, ano] = data.nascimento.split('/').map(Number)
-  console.log(`Parsed Date: ${dia}/${mes}/${ano}`)
 
   // Lembrando que o mês no Date começa em 0 (janeiro) até 11 (dezembro)
   const birthDate = new Date(ano, mes - 1, dia)

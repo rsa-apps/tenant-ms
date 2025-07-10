@@ -3,6 +3,7 @@ import { pgTable, text, integer, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { timestamps } from './columns.helpers'
 import { relations } from 'drizzle-orm'
 import { tenants } from './tenants'
+import { audits } from './audits'
 
 export const users = pgTable('users', {
   id: text('id')
@@ -23,7 +24,7 @@ export const users = pgTable('users', {
   ...timestamps,
 })
 
-export const usersRelations = relations(users, ({ one }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   tenant: one(tenants, {
     fields: [users.tenantId],
     references: [tenants.id],
@@ -40,6 +41,7 @@ export const usersRelations = relations(users, ({ one }) => ({
     fields: [users.id],
     references: [userTokens.userId],
   }),
+  audits: many(audits),
 }))
 
 export const wallets = pgTable('wallets', {
@@ -47,12 +49,12 @@ export const wallets = pgTable('wallets', {
     .$defaultFn(() => createId())
     .primaryKey(),
   userId: text('user_id').notNull(),
-  credits: integer('credits').default(0),
-  bonus: integer('bonus').default(0),
-  totalDeposited: integer('total_deposited').default(0),
-  qtyDeposits: integer('qty_deposits').default(0),
-  totalWithdrawn: integer('total_withdrawn').default(0),
-  qtyWithdraws: integer('qty_withdraws').default(0),
+  credits: integer('credits').notNull().default(0),
+  bonus: integer('bonus').notNull().default(0),
+  totalDeposited: integer('total_deposited').notNull().default(0),
+  qtyDeposits: integer('qty_deposits').notNull().default(0),
+  totalWithdrawn: integer('total_withdrawn').notNull().default(0),
+  qtyWithdraws: integer('qty_withdraws').notNull().default(0),
   ...timestamps,
 })
 

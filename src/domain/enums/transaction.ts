@@ -4,7 +4,7 @@ export const TransactionTypes = {
 }
 
 export const TransactionStatus = {
-  requested: 'requested',
+  PENDING: 'pending',
   PAID: 'paid',
   CANCELED: 'canceled',
 }

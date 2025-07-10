@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { db } from './connection'
 
-import { tenants, theme, users, wallets } from './schema'
+import { audits, tenants, theme, users, wallets } from './schema'
 import { env } from '@/env'
 
 async function seed() {
@@ -11,6 +11,7 @@ async function seed() {
   await db.delete(theme).execute()
   await db.delete(users).execute()
   await db.delete(wallets).execute()
+  await db.delete(audits).execute()
 
   await db.transaction(async (tx) => {
     const [tenant] = await tx

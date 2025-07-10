@@ -8,9 +8,7 @@ import { createPunter } from '@/core/use-cases/users/create-punter/create-punter
 import { signIn } from '@/core/use-cases/users/sign-in/sign-in.controller'
 import { sendForgotPasswordMail } from '@/core/use-cases/users/send-reset-password-email/send-reset-password-email.controller'
 import { getUserById } from '@/core/use-cases/users/get-by-id/get-user-by-id.controller'
-import { depositApproved } from '@/core/use-cases/transactions/deposit-approved/deposit-approved.controller'
-import { withdrawApproved } from '@/core/use-cases/transactions/withdraw-approved/withdraw-approved.controller'
-import { withdrawCanceled } from '@/core/use-cases/transactions/withdraw-canceled/withdraw-canceled.controller'
+import { setTransactions } from '@/core/use-cases/transactions/set-transactions/set-transactions.controller'
 
 export const routes = new Elysia()
   // tenant routes
@@ -26,6 +24,4 @@ export const routes = new Elysia()
   .use(sendForgotPasswordMail)
 
   // transactions
-  .use(depositApproved)
-  .use(withdrawApproved)
-  .use(withdrawCanceled)
+  .use(setTransactions)
