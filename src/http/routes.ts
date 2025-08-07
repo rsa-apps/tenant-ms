@@ -9,6 +9,7 @@ import { signIn } from '@/core/use-cases/users/sign-in/sign-in.controller'
 import { sendForgotPasswordMail } from '@/core/use-cases/users/send-reset-password-email/send-reset-password-email.controller'
 import { getUserById } from '@/core/use-cases/users/get-by-id/get-user-by-id.controller'
 import { setTransactions } from '@/core/use-cases/transactions/set-transactions/set-transactions.controller'
+import { getUserByDoc } from '@/core/use-cases/users/get-user-by-doc/get-user-by-doc.controller'
 
 export const routes = new Elysia()
   // tenant routes
@@ -21,6 +22,7 @@ export const routes = new Elysia()
   .use(createPunter)
   .use(signIn)
   .use(getUserById)
+  .use(getUserByDoc)
   .use(sendForgotPasswordMail)
 
   // transactions
