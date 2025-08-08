@@ -9,9 +9,10 @@ export const setTransactions = new Elysia()
   .put(
     '/transactions',
     async ({ setTransactionsService, body, set }) => {
-      const { userId, amount, type, status, transactionId } = body
+      const { responsibleId, userId, amount, type, status, transactionId } = body
 
       await setTransactionsService.execute({
+        responsibleId,
         userId,
         amount,
         type,
@@ -23,6 +24,7 @@ export const setTransactions = new Elysia()
     },
     {
       body: t.Object({
+        responsibleId: t.Optional(t.String()),
         userId: t.String(),
         amount: t.Number(),
         type: t.String(),

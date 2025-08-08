@@ -49,6 +49,7 @@ export class GetUserByDocService {
         createdAt: users.created_at,
         updatedAt: users.updated_at,
         wallet: {
+          balance: wallets.balance,
           credits: wallets.credits,
           bonus: wallets.bonus,
           totalDeposited: wallets.totalDeposited,
@@ -77,9 +78,9 @@ export class GetUserByDocService {
       createdAt: dayjs(userData.createdAt).format('DD/MM/YYYY HH:mm:ss'),
       updatedAt: userData.updatedAt?.toISOString() || userData.createdAt.toISOString(),
       wallet: {
-        balance: userData.wallet.credits + userData.wallet.bonus || 0,
-        credits: userData.wallet.credits || 0,
-        bonus: userData.wallet.bonus || 0,
+        balance: (userData.wallet.balance) / 100 || 0,
+        credits: userData.wallet.credits / 100 || 0,
+        bonus: userData.wallet.bonus / 100 || 0,
         totalDeposit: userData.wallet.totalDeposited || 0,
         totalWithdrawal: userData.wallet.totalWithdrawn || 0,
       },

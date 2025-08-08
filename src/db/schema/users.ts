@@ -49,6 +49,7 @@ export const wallets = pgTable('wallets', {
     .$defaultFn(() => createId())
     .primaryKey(),
   userId: text('user_id').notNull(),
+  balance: integer('balance').notNull().default(0),
   credits: integer('credits').notNull().default(0),
   bonus: integer('bonus').notNull().default(0),
   totalDeposited: integer('total_deposited').notNull().default(0),
