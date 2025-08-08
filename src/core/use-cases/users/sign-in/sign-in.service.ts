@@ -23,10 +23,20 @@ export interface IResponse {
 export class SignInService {
   async execute({ tenantId, login, password }: IRequest): Promise<IResponse> {
     const [userData] = await db
-      .select()
+      .select({
+        id: users.id,
+        email: users.email,
+        password: users.password,
+        role: users.role,
+        wallet: {
+          balance: wallets.balance,
+          credits: wallets.credits,
+          bonus: wallets.bonus,
+        },
+      })
       .from(users)
       .where(and(eq(users.tenantId, tenantId), eq(users.email, login)))
-      .leftJoin(wallets, eq(users.id, wallets.userId))
+      .innerJoin(wallets, eq(users.id, wallets.userId))
 
     if (!userData) {
       throw new AppError('Invalid credentials', 400)
@@ -34,7 +44,7 @@ export class SignInService {
 
     const passwordHash = await Bun.password.verify(
       password,
-      userData.users.password,
+      userData.password,
     )
 
     if (!passwordHash) {
@@ -42,14 +52,14 @@ export class SignInService {
     }
 
     return {
-      id: userData.users.id,
-      email: userData.users.email,
+      id: userData.id,
+      email: userData.email,
       wallet: {
-        balance: Number(wallets.credits) + Number(wallets.bonus) || 0,
-        credits: Number(wallets.credits) || 0,
-        bonus: Number(wallets.bonus) || 0,
+        balance: userData.wallet.balance / 100,
+        credits: userData.wallet.credits / 100,
+        bonus: userData.wallet.bonus / 100,
       },
-      role: userData.users.role,
+      role: userData.role,
     }
   }
 }

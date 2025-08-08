@@ -13,7 +13,9 @@ export interface IResponse {
   phone: string
   email: string
   name: string
+  role: string[] | null
   wallet: {
+    balance: number
     credits: number
     bonus: number
     totalDeposited: number
@@ -32,7 +34,9 @@ export class GetUserByIdService {
         phoneNumber: users.phoneNumber,
         email: users.email,
         name: users.name,
+        role: users.role,
         wallet: {
+          balance: wallets.balance,
           credits: wallets.credits,
           bonus: wallets.bonus,
           totalDeposited: wallets.totalDeposited,
@@ -55,13 +59,15 @@ export class GetUserByIdService {
       phone: userData.phoneNumber || '',
       email: userData.email || '',
       name: userData.name || '',
+      role: userData.role || [""],
       wallet: {
-        credits: userData.wallet.credits || 0,
-        bonus: userData.wallet.bonus || 0,
-        totalDeposited: userData.wallet.totalDeposited || 0,
-        qtyDeposits: userData.wallet.qtyDeposits || 0,
-        totalWithdrawn: userData.wallet.totalWithdrawn || 0,
-        qtyWithdraws: userData.wallet.qtyWithdraws || 0,
+        balance: userData.wallet.balance / 100,
+        credits: userData.wallet.credits / 100,
+        bonus: userData.wallet.bonus / 100,
+        totalDeposited: userData.wallet.totalDeposited,
+        qtyDeposits: userData.wallet.qtyDeposits,
+        totalWithdrawn: userData.wallet.totalWithdrawn,
+        qtyWithdraws: userData.wallet.qtyWithdraws,
       },
     }
   }
