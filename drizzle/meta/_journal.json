@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1751648262574,
-      "tag": "0000_flawless_young_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1751754121184,
-      "tag": "0001_charming_fabian_cortez",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1751754373812,
-      "tag": "0002_colossal_norrin_radd",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1751984485956,
-      "tag": "0003_optimal_warhawk",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1752154432588,
-      "tag": "0004_flaky_boom_boom",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1754679197808,
-      "tag": "0005_flat_rafael_vega",
+      "when": 1755027958893,
+      "tag": "0000_awesome_ozymandias",
       "breakpoints": true
     }
   ]

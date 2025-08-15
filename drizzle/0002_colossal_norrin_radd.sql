@@ -1,2 +1,0 @@
-ALTER TABLE "theme" ALTER COLUMN "logo" SET DEFAULT 'https://rsa.bet/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frsa-logo.f7e387d5.png&w=256&q=75';--> statement-breakpoint
-ALTER TABLE "theme" ALTER COLUMN "favicon" SET DEFAULT 'https://rsa.bet/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frsa-logo.f7e387d5.png&w=256&q=75';

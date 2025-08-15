@@ -70,7 +70,8 @@ export class GetTenantByDomainService {
       },
     )
 
-    if (!paymentConfig.data) {
+    if (paymentConfig.status !== 200) {
+      console.log('Erro ao buscar configuração de pagamento')
       throw new AppError('Erro ao buscar configuração de pagamento', 500)
     }
 
