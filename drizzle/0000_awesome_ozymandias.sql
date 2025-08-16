@@ -14,11 +14,11 @@ CREATE TABLE "tenants" (
 --> statement-breakpoint
 CREATE TABLE "theme" (
 	"id" text PRIMARY KEY NOT NULL,
-	"logo" text,
-	"favicon" text,
-	"primary_color" text,
-	"secondary_color" text,
-	"background_color" text,
+	"logo" text DEFAULT 'https://rsa.bet/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frsa-logo.f7e387d5.png&w=256&q=75',
+	"favicon" text DEFAULT 'https://rsa.bet/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frsa-logo.f7e387d5.png&w=256&q=75',
+	"primary_color" text DEFAULT '#000000',
+	"secondary_color" text DEFAULT '#FFFFFF',
+	"background_color" text DEFAULT '#F0F0F0',
 	"tenant_id" text NOT NULL,
 	"updated_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE "user_token" (
 CREATE TABLE "users" (
 	"id" text PRIMARY KEY NOT NULL,
 	"tenant_id" text NOT NULL,
-	"name" text,
+	"name" text NOT NULL,
 	"email" text NOT NULL,
 	"username" text,
 	"phone_number" text,
@@ -50,7 +50,7 @@ CREATE TABLE "users" (
 	"status" boolean DEFAULT true NOT NULL,
 	"role" text[] DEFAULT '{"PUNTER"}',
 	"password" text NOT NULL,
-	"birth_date" timestamp,
+	"birth_date" timestamp NOT NULL,
 	"invited_by" text,
 	"affiliation_id" text,
 	"updated_at" timestamp,
@@ -61,12 +61,24 @@ CREATE TABLE "users" (
 CREATE TABLE "wallets" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
-	"credits" integer DEFAULT 0,
-	"bonus" integer DEFAULT 0,
-	"total_deposited" integer DEFAULT 0,
-	"qty_deposits" integer DEFAULT 0,
-	"total_withdrawn" integer DEFAULT 0,
-	"qty_withdraws" integer DEFAULT 0,
+	"balance" integer DEFAULT 0 NOT NULL,
+	"credits" integer DEFAULT 0 NOT NULL,
+	"bonus" integer DEFAULT 0 NOT NULL,
+	"total_deposited" integer DEFAULT 0 NOT NULL,
+	"qty_deposits" integer DEFAULT 0 NOT NULL,
+	"total_withdrawn" integer DEFAULT 0 NOT NULL,
+	"qty_withdraws" integer DEFAULT 0 NOT NULL,
+	"updated_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE "audits" (
+	"id" text PRIMARY KEY NOT NULL,
+	"action" text NOT NULL,
+	"description" text NOT NULL,
+	"responsible" text NOT NULL,
+	"affected" text NOT NULL,
 	"updated_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
