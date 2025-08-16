@@ -3,7 +3,6 @@ import { eq } from 'drizzle-orm'
 import { dbFunctions } from '@/db/functions'
 import { wallets } from '@/db/schema'
 import { calcDecrement } from '@/domain/utils/calc-decrement'
-import { AppError } from '@/domain/errors/AppError'
 
 interface IRequest {
   userId: string
@@ -21,10 +20,6 @@ export async function placeBet({
   })
   .from(wallets)
   .where(eq(wallets.userId, userId))
-
-  if (!wallet || wallet.balance + wallet.credits + wallet.bonus < amount) {
-    throw new AppError("Saldo insuficiente", 400)
-  }
 
   const result = calcDecrement({
     credits: wallet.credits,
