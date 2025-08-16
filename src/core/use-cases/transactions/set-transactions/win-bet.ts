@@ -12,7 +12,11 @@ export async function winBet({
   userId,
   amount,
 }: IRequest) {
-  await db.update(wallets).set({
+  const [walletUpdated] = await db.update(wallets).set({
     balance: dbFunctions.increment(wallets.balance, amount),
-  }).where(eq(wallets.userId, userId))
+  }).where(eq(wallets.userId, userId)).returning()
+
+  if (!walletUpdated) {
+    throw new Error('Failed to update wallet')
+  }
 }

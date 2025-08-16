@@ -28,9 +28,13 @@ export async function placeBet({
     betAmount: amount,
   })
 
-  await db.update(wallets).set({
+  const [walletUpdated] = await db.update(wallets).set({
     balance: dbFunctions.decrement(wallets.balance, result.decrementOnBalance),
     credits: dbFunctions.decrement(wallets.credits, result.decrementOnCredits),
     bonus: dbFunctions.decrement(wallets.bonus, result.decrementOnBonus),
-  }).where(eq(wallets.userId, userId))
+  }).where(eq(wallets.userId, userId)).returning()
+
+  if (!walletUpdated) {
+    throw new Error('Failed to update wallet')
+  }
 }
