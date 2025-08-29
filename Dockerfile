@@ -1,33 +1,42 @@
-FROM oven/bun AS build
+# syntax = docker/dockerfile:1
 
+# Adjust BUN_VERSION as desired
+ARG BUN_VERSION=1.0.20
+FROM oven/bun:${BUN_VERSION}-slim AS base
+
+LABEL fly_launch_runtime="Bun"
+
+# Bun app lives here
 WORKDIR /app
 
-# Cache packages installation
-COPY package.json package.json
-COPY bun.lock bun.lock
+# Set production environment
+ENV NODE_ENV="production"
 
-RUN bun install
+# Throw-away build stage to reduce size of final image
+FROM base AS build
 
-COPY ./src ./src
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential openssl pkg-config python-is-python3
 
-ENV NODE_ENV=production
+# Install node modules
+COPY --link bun.lockb package.json ./
+RUN bun install --ci
 
-RUN bun build \
-	--compile \
-	--minify-whitespace \
-	--minify-syntax \
-	--target bun \
-	--outfile server \
-	./src/index.ts
+# Copy application code
+COPY --link . .
 
-FROM gcr.io/distroless/base
+# Final stage for app image
+FROM base
 
-WORKDIR /app
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y openssl && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-COPY --from=build /app/server server
+# Copy built application
+COPY --from=build /app /app
 
-ENV NODE_ENV=production
-
-CMD ["./server"]
-
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
+CMD [ "bun", "run", "start" ]
